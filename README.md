@@ -20,15 +20,15 @@ A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, im
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Runtime | Python 3.12 |
-| Discord | discord.py |
-| AI Models | Google Gemini 3, Imagen, Veo 3.1 |
-| Type Checking | Pyright |
-| Package Manager | uv |
-| Deployment | Hugging Face Spaces (Docker) |
-| CI/CD | GitHub Actions |
+| Category        | Technology                       |
+| --------------- | -------------------------------- |
+| Runtime         | Python 3.12                      |
+| Discord         | discord.py                       |
+| AI Models       | Google Gemini 3, Imagen, Veo 3.1 |
+| Type Checking   | Pyright                          |
+| Package Manager | uv                               |
+| Deployment      | Hugging Face Spaces (Docker)     |
+| CI/CD           | GitHub Actions                   |
 
 ## Architecture
 
@@ -83,11 +83,11 @@ Mention the bot or send a DM:
 
 The bot uses keyword-based routing (with AI-powered routing planned):
 
-| Keywords | Action |
-|----------|--------|
+| Keywords                                  | Action           |
+| ----------------------------------------- | ---------------- |
 | "draw", "paint", "image of", "picture of" | Image generation |
-| "video of", "animate", "movie of" | Video generation |
-| (default) | Text generation |
+| "video of", "animate", "movie of"         | Video generation |
+| (default)                                 | Text generation  |
 
 ## Setup
 
@@ -102,8 +102,8 @@ The bot uses keyword-based routing (with AI-powered routing planned):
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/discord-gemini-bot.git
-cd discord-gemini-bot
+git clone https://github.com/YOUR_USERNAME/discord-bot.git
+cd discord-bot
 
 # Install dependencies
 uv sync

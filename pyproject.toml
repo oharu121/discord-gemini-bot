@@ -1,5 +1,5 @@
 [project]
-name = "discord-gemini-bot"
+name = "discord-bot"
 version = "0.1.0"
 description = "A Discord bot powered by Google Gemini 3 and Veo"
 readme = "README.md"
