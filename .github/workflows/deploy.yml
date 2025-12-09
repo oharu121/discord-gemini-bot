@@ -9,6 +9,7 @@ on:
       - 'uv.lock'
       - 'Dockerfile'
       - 'requirements.txt'
+      - 'README.md'
       - '.github/workflows/deploy.yml'
 
 jobs:
