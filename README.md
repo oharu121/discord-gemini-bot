@@ -3,8 +3,10 @@ title: Discord Bot
 emoji: 🤖
 colorFrom: blue
 colorTo: purple
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 5.33.0
+app_file: app.py
+python_version: "3.12"
 ---
 
 # Discord Gemini Bot
@@ -27,7 +29,7 @@ A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, im
 | AI Models       | Google Gemini 3, Imagen, Veo 3.1 |
 | Type Checking   | Pyright                          |
 | Package Manager | uv                               |
-| Deployment      | Hugging Face Spaces (Docker)     |
+| Deployment      | Hugging Face Spaces (Gradio)     |
 | CI/CD           | GitHub Actions                   |
 
 ## Architecture
@@ -54,10 +56,10 @@ Router (Intent Detection)
 ### Project Structure
 
 ```
+app.py                # Gradio entry point (HF Spaces)
 src/
-├── main.py           # Entry point
+├── main.py           # CLI entry point
 ├── config.py         # Environment configuration
-├── app.py            # Gradio status page (HF Spaces)
 ├── ai/
 │   ├── client.py     # Gemini API wrapper
 │   └── models.py     # Model constants
@@ -155,7 +157,7 @@ Deploy to HF Spaces
 
 ### HF Spaces Setup
 
-1. Create a new Space (Docker SDK, Private)
+1. Create a new Space (Gradio SDK, Private)
 2. Add secrets: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
 3. Set up GitHub secrets: `HF_TOKEN`
 4. Set up GitHub variables: `HF_USERNAME`, `HF_SPACE_NAME`
