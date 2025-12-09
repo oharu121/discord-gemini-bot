@@ -14,8 +14,5 @@ RUN uv sync --frozen --no-dev
 # Copy source code
 COPY src/ ./src/
 
-# Expose port for HF Spaces
-EXPOSE 7860
-
-# Run the app (Gradio + Discord bot)
+# Run the Discord bot
 CMD ["uv", "run", "python", "-m", "src.main"]

@@ -1,4 +1,4 @@
-name: Deploy to Hugging Face Spaces
+name: Deploy to Railway
 
 on:
   push:
@@ -8,8 +8,6 @@ on:
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
-      - 'requirements.txt'
-      - 'README.md'
       - '.github/workflows/deploy.yml'
 
 jobs:
@@ -36,16 +34,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Push to Hugging Face Spaces
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_USERNAME: ${{ vars.HF_USERNAME }}
-          HF_SPACE_NAME: ${{ vars.HF_SPACE_NAME }}
-        run: |
-          rm -rf .git
-          git init --initial-branch=main
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git add .
-          git commit -m "Deploy from GitHub Actions - ${{ github.sha }}"
-          git push --force https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE_NAME} main
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service ${{ vars.RAILWAY_SERVICE }}

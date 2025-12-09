@@ -1,14 +1,3 @@
----
-title: Discord Bot
-emoji: 🤖
-colorFrom: blue
-colorTo: purple
-sdk: gradio
-sdk_version: 5.33.0
-app_file: app.py
-python_version: "3.12"
----
-
 # Discord Gemini Bot
 
 A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, image, and video generation.
@@ -29,7 +18,7 @@ A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, im
 | AI Models       | Google Gemini 3, Imagen, Veo 3.1 |
 | Type Checking   | Pyright                          |
 | Package Manager | uv                               |
-| Deployment      | Hugging Face Spaces (Gradio)     |
+| Deployment      | Railway (Docker)                 |
 | CI/CD           | GitHub Actions                   |
 
 ## Architecture
@@ -56,9 +45,8 @@ Router (Intent Detection)
 ### Project Structure
 
 ```
-app.py                # Gradio entry point (HF Spaces)
 src/
-├── main.py           # CLI entry point
+├── main.py           # Entry point
 ├── config.py         # Environment configuration
 ├── ai/
 │   ├── client.py     # Gemini API wrapper
@@ -139,7 +127,7 @@ uv run pyright
 
 ## Deployment
 
-This project is configured for **Hugging Face Spaces** with automatic deployment via GitHub Actions.
+This project is configured for **Railway** with automatic deployment via GitHub Actions.
 
 ### CI/CD Pipeline
 
@@ -152,15 +140,16 @@ GitHub Actions
     +---> Pyright Type Check
     |
     v
-Deploy to HF Spaces
+Deploy to Railway
 ```
 
-### HF Spaces Setup
+### Railway Setup
 
-1. Create a new Space (Gradio SDK, Private)
-2. Add secrets: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
-3. Set up GitHub secrets: `HF_TOKEN`
-4. Set up GitHub variables: `HF_USERNAME`, `HF_SPACE_NAME`
+1. Create a new project on [Railway](https://railway.app)
+2. Add environment variables: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
+3. Generate a project token (Settings > Tokens)
+4. Set up GitHub secrets: `RAILWAY_TOKEN`
+5. Set up GitHub variables: `RAILWAY_SERVICE` (your service name)
 
 ## Roadmap
 
