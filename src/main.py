@@ -1,6 +1,7 @@
 """Entry point for Discord Gemini Bot."""
 
 import os
+import socket
 import threading
 from datetime import datetime
 
@@ -8,8 +9,23 @@ from src import config
 from src.bot.client import DiscordBot
 
 
+def check_dns() -> None:
+    """Check DNS resolution for debugging."""
+    hosts = ["discord.com", "generativelanguage.googleapis.com", "google.com"]
+    for host in hosts:
+        try:
+            ip = socket.gethostbyname(host)
+            print(f"DNS OK: {host} -> {ip}")
+        except socket.gaierror as e:
+            print(f"DNS FAIL: {host} -> {e}")
+
+
 def main() -> None:
     """Start the Discord bot with Gradio status page on HF Spaces."""
+    # Debug DNS on HF Spaces
+    if os.getenv("SPACE_ID"):
+        check_dns()
+
     if not config.validate_config():
         return
 
