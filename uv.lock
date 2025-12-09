@@ -354,7 +354,7 @@ wheels = [
 ]
 
 [[package]]
-name = "discord-bot"
+name = "discord-gemini-bot"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

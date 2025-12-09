@@ -1,5 +1,5 @@
 """Utility modules."""
 
-from src.utils.logging import logger, setup_logger
+from src.utils.logging import logger, setup_logging
 
-__all__ = ["logger", "setup_logger"]
+__all__ = ["logger", "setup_logging"]

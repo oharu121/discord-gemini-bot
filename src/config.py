@@ -12,6 +12,7 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # Feature flags
 USE_FUNCTION_CALLING = os.getenv("USE_FUNCTION_CALLING", "false").lower() == "true"
+USE_GROUNDING = os.getenv("USE_GROUNDING", "false").lower() == "true"
 
 
 def validate_config() -> bool:

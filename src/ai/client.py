@@ -1,10 +1,12 @@
 """Google Gemini API client wrapper."""
 
 import asyncio
+from datetime import datetime
 
 from google import genai
 from google.genai import types
 
+from src import config
 from src.ai.models import MODEL_TEXT, MODEL_IMAGE, MODEL_VIDEO
 from src.utils.logging import logger
 
@@ -40,12 +42,24 @@ class GeminiClientWrapper:
         # Add text prompt
         contents.append(prompt)
 
+        # Build generation config with system instruction
+        gen_config = types.GenerateContentConfig(
+            system_instruction=f"""You are a helpful Discord bot assistant.
+Today's date is {datetime.now().strftime("%Y-%m-%d")}.
+Be concise in your responses as they appear in Discord chat.""",
+        )
+
+        # Add grounding if enabled (for real-time info like weather, news, CVEs)
+        if config.USE_GROUNDING:
+            gen_config.tools = [types.Tool(google_search=types.GoogleSearch())]
+
         try:
             # Run in executor to avoid blocking the async event loop
             response = await asyncio.to_thread(
                 self.client.models.generate_content,
                 model=MODEL_TEXT,
-                contents=contents
+                contents=contents,
+                config=gen_config
             )
             return response.text or ""
         except Exception as e:

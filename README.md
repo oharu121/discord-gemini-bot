@@ -92,8 +92,8 @@ The bot uses keyword-based routing (with AI-powered routing planned):
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/discord-bot.git
-cd discord-bot
+git clone https://github.com/YOUR_USERNAME/discord-gemini-bot.git
+cd discord-gemini-bot
 
 # Install dependencies
 uv sync
