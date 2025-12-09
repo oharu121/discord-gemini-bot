@@ -1,0 +1,1 @@
+"""Discord Gemini Bot package."""

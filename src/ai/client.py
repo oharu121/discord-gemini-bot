@@ -1,0 +1,105 @@
+"""Google Gemini API client wrapper."""
+
+import asyncio
+
+from google import genai
+from google.genai import types
+
+from src.ai.models import MODEL_TEXT, MODEL_IMAGE, MODEL_VIDEO
+from src.utils.logging import logger
+
+
+class GeminiClientWrapper:
+    """Wrapper to handle Google GenAI interactions for Text, Image, and Video."""
+
+    def __init__(self, api_key: str):
+        self.client = genai.Client(api_key=api_key)
+
+    async def generate_text(
+        self,
+        prompt: str,
+        history: list | None = None,
+        image_data: list | None = None
+    ) -> str:
+        """Generates text, handling multimodal inputs (text + images)."""
+        contents = []
+
+        # Add history if provided
+        if history:
+            # Simple conversion of history to format expected by API
+            # In production, manage full conversation turns here
+            pass
+
+        # Add current images if any
+        if image_data:
+            for img in image_data:
+                contents.append(
+                    types.Part.from_bytes(data=img["data"], mime_type=img["mime"])
+                )
+
+        # Add text prompt
+        contents.append(prompt)
+
+        try:
+            # Run in executor to avoid blocking the async event loop
+            response = await asyncio.to_thread(
+                self.client.models.generate_content,
+                model=MODEL_TEXT,
+                contents=contents
+            )
+            return response.text or ""
+        except Exception as e:
+            logger.error(f"Text Generation Error: {e}")
+            return f"Error generating text: {str(e)}"
+
+    async def generate_image(self, prompt: str) -> bytes | None:
+        """Generates an image using Gemini 3 Image Preview or Imagen."""
+        try:
+            response = await asyncio.to_thread(
+                self.client.models.generate_images,
+                model=MODEL_IMAGE,
+                prompt=prompt,
+                config=types.GenerateImagesConfig(number_of_images=1)
+            )
+            # Accessing the first generated image
+            if response.generated_images:
+                image = response.generated_images[0].image
+                if image:
+                    return image.image_bytes
+            return None
+        except Exception as e:
+            logger.error(f"Image Generation Error: {e}")
+            raise e
+
+    async def generate_video(self, prompt: str) -> bytes | None:
+        """Generates a video using Veo (Long running operation)."""
+        logger.info(f"Starting video generation for: {prompt}")
+        try:
+            # Start the operation
+            operation = await asyncio.to_thread(
+                self.client.models.generate_videos,
+                model=MODEL_VIDEO,
+                prompt=prompt,
+                config=types.GenerateVideosConfig(fps=24, duration_seconds=5)
+            )
+
+            # Poll for completion
+            while not operation.done:
+                logger.info("Waiting for video generation...")
+                await asyncio.sleep(5)
+                operation = await asyncio.to_thread(
+                    self.client.operations.get,
+                    operation.name
+                )
+
+            # Get result
+            result = getattr(operation, "result", None)
+            if result and getattr(result, "generated_videos", None):
+                video_result = result.generated_videos[0]
+                video = getattr(video_result, "video", None)
+                if video:
+                    return video.video_bytes
+            return None
+        except Exception as e:
+            logger.error(f"Video Generation Error: {e}")
+            raise e

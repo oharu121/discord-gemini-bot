@@ -15,8 +15,13 @@ dependencies = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-# --- FIX BELOW ---
-# This tells the builder to include files from the current directory
-# instead of looking for a package folder.
 [tool.hatch.build.targets.wheel]
-packages = ["bot.py"]
+packages = ["src"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.407",
+]
+
+[project.scripts]
+start = "src.main:main"
