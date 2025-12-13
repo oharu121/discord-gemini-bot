@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0]
+
+### Added
+- Conversation history support using sliding window strategy (last 10 bot-involved messages)
+- New `src/bot/history.py` module for fetching conversation context
+- Multi-turn conversation support - bot now understands follow-up messages
+
+### Changed
+- `generate_text()` now accepts conversation history for context-aware responses
+- Text handler fetches recent bot interactions before generating response
+
 ## [1.1.0]
 
 ### Added

@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 import discord
 
 from src.ai.client import GeminiClientWrapper
+from src.bot.history import get_conversation_history
 from src.utils.logging import logger
 
 
@@ -118,7 +119,16 @@ async def handle_text_generation(
     bot_user: discord.User | discord.ClientUser | None = None
 ) -> None:
     """Handle text/reasoning requests (including vision)."""
-    response_text = await ai.generate_text(prompt, image_data=image_data)
+    # Fetch conversation history for context (sliding window: last 10 bot-involved messages)
+    history = None
+    if bot_user:
+        history = await get_conversation_history(
+            message.channel,  # type: ignore[arg-type]
+            bot_user.id,
+            limit=10
+        )
+
+    response_text = await ai.generate_text(prompt, history=history, image_data=image_data)
 
     # Split long messages (Discord limit is 2000 chars)
     if len(response_text) > 2000:
