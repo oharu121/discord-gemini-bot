@@ -14,6 +14,9 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 USE_FUNCTION_CALLING = os.getenv("USE_FUNCTION_CALLING", "false").lower() == "true"
 USE_GROUNDING = os.getenv("USE_GROUNDING", "false").lower() == "true"
 
+# RAG API configuration
+RAG_API_URL = os.getenv("RAG_API_URL", "https://oharu121-rag-demo.hf.space")
+
 
 def validate_config() -> bool:
     """Validate that required configuration is present."""

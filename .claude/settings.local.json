@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(uv run pyright:*)"
+      "Bash(uv run pyright:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []
