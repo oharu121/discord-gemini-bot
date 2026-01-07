@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0]
+
+### Changed
+- Switched deployment from Railway to Hugging Face Spaces
+- Updated `setup-uv` GitHub Action from v4 to v7
+
 ## [1.2.0]
 
 ### Added
