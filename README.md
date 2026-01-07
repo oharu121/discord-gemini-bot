@@ -1,7 +1,7 @@
 ---
 title: Discord Gemini Bot
 emoji: 🤖
-colorFrom: blue
+colorFrom: yellow
 colorTo: purple
 sdk: docker
 app_port: 7860
