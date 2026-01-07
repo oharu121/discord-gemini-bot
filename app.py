@@ -83,7 +83,7 @@ with gr.Blocks(title="Discord Gemini Bot") as demo:
     def healthz() -> str:
         return "ok"
 
-    gr.api(healthz, api_name="healthz")
+    gr.api(healthz, api_name="healthz")  # type: ignore[attr-defined]
 
 
 if __name__ == "__main__":
