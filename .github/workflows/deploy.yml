@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - 'app.py'
+      - 'requirements.txt'
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
