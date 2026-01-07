@@ -1,3 +1,12 @@
+---
+title: Discord Gemini Bot
+emoji: 🤖
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+---
+
 # Discord Gemini Bot
 
 A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, image, and video generation.
@@ -18,7 +27,7 @@ A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, im
 | AI Models       | Google Gemini 3, Imagen, Veo 3.1 |
 | Type Checking   | Pyright                          |
 | Package Manager | uv                               |
-| Deployment      | Railway (Docker)                 |
+| Deployment      | Hugging Face Spaces (Docker)     |
 | CI/CD           | GitHub Actions                   |
 
 ## Architecture
@@ -127,7 +136,7 @@ uv run pyright
 
 ## Deployment
 
-This project is configured for **Railway** with automatic deployment via GitHub Actions.
+This project is configured for **Hugging Face Spaces** with automatic deployment via GitHub Actions.
 
 ### CI/CD Pipeline
 
@@ -140,16 +149,17 @@ GitHub Actions
     +---> Pyright Type Check
     |
     v
-Deploy to Railway
+Deploy to Hugging Face Spaces
 ```
 
-### Railway Setup
+### Hugging Face Spaces Setup
 
-1. Create a new project on [Railway](https://railway.app)
-2. Add environment variables: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
-3. Generate a project token (Settings > Tokens)
-4. Set up GitHub secrets: `RAILWAY_TOKEN`
-5. Set up GitHub variables: `RAILWAY_SERVICE` (your service name)
+1. Create a new Space on [Hugging Face](https://huggingface.co/spaces)
+2. Select Docker SDK
+3. Add environment variables in Space settings: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
+4. Generate a HF token with write access
+5. Set up GitHub secrets: `HF_TOKEN`
+6. Set up GitHub variables: `HF_USERNAME`, `HF_SPACE_NAME`
 
 ## Roadmap
 
