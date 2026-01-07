@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.3.0]
 
+### Added
+- Gradio web UI showing bot status (online/offline, user, guilds, uptime)
+- `/healthz` endpoint for keep-alive pings
+
 ### Changed
 - Switched deployment from Railway to Hugging Face Spaces
 - Updated `setup-uv` GitHub Action from v4 to v7
+- Refactored main entry point to run Gradio app alongside Discord bot
 
 ## [1.2.0]
 
