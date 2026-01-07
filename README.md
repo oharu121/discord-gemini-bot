@@ -3,8 +3,10 @@ title: Discord Gemini Bot
 emoji: 🤖
 colorFrom: yellow
 colorTo: purple
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 5.33.0
+app_file: app.py
+python_version: "3.12"
 ---
 
 # Discord Gemini Bot
@@ -27,7 +29,7 @@ A multimodal Discord bot powered by **Google Gemini 3** and **Veo** for text, im
 | AI Models       | Google Gemini 3, Imagen, Veo 3.1 |
 | Type Checking   | Pyright                          |
 | Package Manager | uv                               |
-| Deployment      | Hugging Face Spaces (Docker)     |
+| Deployment      | Hugging Face Spaces (Gradio)     |
 | CI/CD           | GitHub Actions                   |
 
 ## Architecture
@@ -155,7 +157,7 @@ Deploy to Hugging Face Spaces
 ### Hugging Face Spaces Setup
 
 1. Create a new Space on [Hugging Face](https://huggingface.co/spaces)
-2. Select Docker SDK
+2. Select Gradio SDK
 3. Add environment variables in Space settings: `DISCORD_TOKEN`, `GOOGLE_API_KEY`
 4. Generate a HF token with write access
 5. Set up GitHub secrets: `HF_TOKEN`
