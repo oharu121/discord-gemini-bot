@@ -1,11 +1,11 @@
-# Plan: Gradio Status Page + /healthz Endpoint on Single Port
+# Plan: Gradio Status Page + Health Check Endpoint on Single Port
 
 ## Goal
 - Gradio web UI at `/` showing bot status
-- `/healthz` endpoint returning "ok" for keep-alive pings
+- Health check endpoint for keep-alive pings
 - Both on port 7860 (HF Spaces default)
 
-## Approach (Updated 2026-01-07)
+## Approach (Updated 2026-01-08)
 Use **Gradio SDK** (not Docker) with the Discord bot running in a background thread.
 
 **Why Gradio SDK?** Docker SDK on HF Spaces has DNS issues that prevent connecting to discord.com. Gradio SDK avoids these networking restrictions.
@@ -20,7 +20,7 @@ HF Spaces (Gradio SDK)
               |
               +---> Gradio interface (main thread)
               |         - Status page at /
-              |         - /healthz endpoint
+              |         - Health check at /gradio_api/call/healthz
               |
               +---> Discord bot (background daemon thread)
                         - Connects to Discord gateway
@@ -34,7 +34,6 @@ HF Spaces (Gradio SDK)
 import threading
 from datetime import datetime
 import gradio as gr
-from fastapi.responses import PlainTextResponse
 
 bot_status = {"started_at": None, "is_running": False, "last_error": None}
 
@@ -60,10 +59,10 @@ with gr.Blocks(title="Discord Gemini Bot") as demo:
     refresh_btn = gr.Button("Refresh Status")
     refresh_btn.click(fn=get_status, outputs=status_display)
 
-# Add /healthz endpoint
-@demo.app.get("/healthz")
-def healthz():
-    return PlainTextResponse("ok")
+    # Add health check API endpoint
+    def healthz() -> str:
+        return "ok"
+    gr.api(healthz, api_name="healthz")
 
 if __name__ == "__main__":
     demo.launch()
@@ -96,13 +95,29 @@ aiohttp>=3.9.0
 ### Local Development
 `src/main.py` remains for local development with `uv run start`.
 
+## Health Check Endpoint
+
+### Problem (2026-01-08)
+The original approach using `@demo.app.get("/healthz")` didn't work because Gradio's catch-all routing intercepts all undefined routes and serves the Gradio interface.
+
+### Solution
+Use `gr.api()` (added in Gradio v5.11, January 2025) to create a proper API endpoint:
+```python
+def healthz() -> str:
+    return "ok"
+gr.api(healthz, api_name="healthz")
+```
+
+This creates an endpoint at `/gradio_api/call/healthz` which bypasses Gradio's catch-all routing.
+
 ## Why This Works
 - **Gradio SDK**: No Docker networking/DNS issues
 - **Thread isolation**: Bot runs in daemon thread, Gradio in main thread
 - **Separate event loops**: Each thread manages its own event loop
 - **Clean shutdown**: Daemon thread auto-terminates when main thread exits
+- **gr.api()**: Official Gradio way to add custom API endpoints
 
 ## Result
 - `GET /` → Gradio status page (uptime, started time, errors)
-- `GET /healthz` → "ok" for keep-alive pings
+- `GET /gradio_api/call/healthz` → "ok" for keep-alive pings
 - Both on port 7860
