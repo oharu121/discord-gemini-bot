@@ -79,12 +79,6 @@ with gr.Blocks(title="Discord Gemini Bot") as demo:
     refresh_btn = gr.Button("Refresh Status")
     refresh_btn.click(fn=get_status, outputs=status_display)
 
-    # Add health check API endpoint (accessible at /gradio_api/call/healthz)
-    def healthz() -> str:
-        return "ok"
-
-    gr.api(healthz, api_name="healthz")  # type: ignore[attr-defined]
-
 
 if __name__ == "__main__":
     demo.launch()
