@@ -52,7 +52,7 @@ def start_discord_bot() -> None:
 
     try:
         from src import config
-        from src.bot.client import DiscordBot
+        from src.bot.client import DiscordBot, create_connector_with_custom_dns
 
         if not config.validate_config():
             bot_status["last_error"] = "Invalid configuration"
@@ -65,7 +65,9 @@ def start_discord_bot() -> None:
         token = config.DISCORD_TOKEN
         logger.info(f"Token length: {len(token)}, parts: {len(token.split('.'))}")
 
-        bot = DiscordBot()
+        # Create connector with custom DNS to bypass HF Spaces DNS restrictions
+        connector = create_connector_with_custom_dns()
+        bot = DiscordBot(connector=connector)
 
         # Create a new event loop for this thread
         loop = asyncio.new_event_loop()

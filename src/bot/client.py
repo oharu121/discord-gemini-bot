@@ -1,5 +1,6 @@
 """Discord bot client."""
 
+import aiohttp
 import discord
 from discord import app_commands
 
@@ -14,13 +15,25 @@ from src.bot.handlers import (
 from src.utils.logging import logger
 
 
+def create_connector_with_custom_dns() -> aiohttp.TCPConnector:
+    """Create aiohttp connector with custom DNS resolver (Google/Cloudflare)."""
+    try:
+        from aiohttp.resolver import AsyncResolver
+        resolver = AsyncResolver(nameservers=["8.8.8.8", "1.1.1.1"])
+        logger.info("Using custom DNS resolver (Google/Cloudflare)")
+        return aiohttp.TCPConnector(resolver=resolver)
+    except Exception as e:
+        logger.warning(f"Failed to create custom DNS resolver: {e}, using default")
+        return aiohttp.TCPConnector()
+
+
 class DiscordBot(discord.Client):
     """Main Discord bot client with Gemini AI integration."""
 
-    def __init__(self):
+    def __init__(self, connector: aiohttp.TCPConnector | None = None):
         # Enable all intents to read message content and members
         intents = discord.Intents.all()
-        super().__init__(intents=intents)
+        super().__init__(intents=intents, connector=connector)
 
         self.tree = app_commands.CommandTree(self)
 
