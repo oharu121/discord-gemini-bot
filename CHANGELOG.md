@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0]
+
+### Added
+- Custom DNS resolver using Google (8.8.8.8) and Cloudflare (1.1.1.1) DNS to bypass HF Spaces DNS restrictions
+- `aiodns` dependency for async DNS resolution
+- Detailed connection logging for better debugging
+
+### Fixed
+- Discord bot failing to connect on HF Spaces due to DNS resolution being blocked
+- Silent connection failures now properly logged with specific error messages
+
+### Changed
+- `DiscordBot` now accepts optional `connector` parameter for custom aiohttp configuration
+- Bot initialization moved inside async context to support `AsyncResolver`
+
 ## [1.3.0]
 
 ### Added

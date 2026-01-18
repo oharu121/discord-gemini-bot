@@ -172,9 +172,9 @@ Deploy to Hugging Face Spaces
 - [x] Modular architecture
 - [x] Type checking with Pyright
 - [x] CI/CD deployment
+- [x] Conversation history
+- [x] Slash commands (`/ask` for RAG queries)
 - [ ] AI-powered intent detection (function calling)
-- [ ] Conversation history
-- [ ] Slash commands
 
 ## Development Notes
 
@@ -183,6 +183,8 @@ Detailed development notes are available in `.dev-notes/`:
 - `2025-11-24.md` - Architecture overview, WebSocket vs SSE comparison
 - `2025-12-07.md` - Modularization and Router pattern
 - `2025-12-09.md` - Type checking setup
+- `2026-01-07.md` - HF Spaces deployment fixes (shallow clone, DNS errors)
+- `2026-01-18.md` - Custom DNS resolver to bypass HF Spaces restrictions
 
 ## License
 
