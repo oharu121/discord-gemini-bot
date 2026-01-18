@@ -71,14 +71,14 @@ def start_discord_bot() -> None:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 
-        async def runner():
+        async def runner(discord_token: str) -> None:
             bot_status["started_at"] = datetime.now()
             bot_status["is_running"] = True
             logger.info("Starting Discord bot connection...")
 
             try:
                 logger.info("Attempting login...")
-                await bot.login(config.DISCORD_TOKEN)
+                await bot.login(discord_token)
                 logger.info("Login successful, connecting to gateway...")
                 await bot.connect()
             except Exception as e:
@@ -88,7 +88,7 @@ def start_discord_bot() -> None:
                 raise
 
         try:
-            loop.run_until_complete(runner())
+            loop.run_until_complete(runner(token))
         except Exception as e:
             logger.error(f"Event loop error: {e}")
         finally:
