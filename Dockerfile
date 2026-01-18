@@ -11,8 +11,12 @@ COPY pyproject.toml uv.lock README.md ./
 # Install dependencies
 RUN uv sync --frozen --no-dev
 
-# Copy source code
+# Copy source code and app
 COPY src/ ./src/
+COPY app.py ./
 
-# Run the Discord bot
-CMD ["uv", "run", "python", "-m", "src.main"]
+# Expose Gradio port (HF Spaces expects 7860)
+EXPOSE 7860
+
+# Run the Gradio app
+CMD ["uv", "run", "python", "app.py"]

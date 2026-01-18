@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `DiscordBot` now accepts optional `connector` parameter for custom aiohttp configuration
 - Bot initialization moved inside async context to support `AsyncResolver`
+- Switched from Gradio SDK to Docker SDK on HF Spaces
+- Removed `requirements.txt` - using `pyproject.toml` as single source of truth
+- Updated Dockerfile to run `app.py` with `uv run`
 
 ## [1.3.0]
 

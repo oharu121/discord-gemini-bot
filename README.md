@@ -3,8 +3,7 @@ title: Discord Gemini Bot
 emoji: 🤖
 colorFrom: yellow
 colorTo: purple
-sdk: gradio
-sdk_version: 5.33.0
+sdk: docker
 app_file: app.py
 python_version: "3.12"
 ---

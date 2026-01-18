@@ -6,7 +6,6 @@ on:
     paths:
       - 'src/**'
       - 'app.py'
-      - 'requirements.txt'
       - 'pyproject.toml'
       - 'uv.lock'
       - 'Dockerfile'
