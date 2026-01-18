@@ -47,6 +47,8 @@ def get_status() -> str:
 
 def start_discord_bot() -> None:
     """Start the Discord bot in background."""
+    import asyncio
+
     try:
         from src import config
         from src.bot.client import DiscordBot
@@ -60,7 +62,14 @@ def start_discord_bot() -> None:
 
         assert config.DISCORD_TOKEN is not None
         bot = DiscordBot()
-        bot.run(config.DISCORD_TOKEN)
+
+        # Create a new event loop for this thread
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(bot.start(config.DISCORD_TOKEN))
+        finally:
+            loop.close()
     except Exception as e:
         bot_status["last_error"] = str(e)
         bot_status["is_running"] = False
