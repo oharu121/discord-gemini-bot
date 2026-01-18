@@ -8,6 +8,8 @@ import threading
 from datetime import datetime
 
 import gradio as gr
+import uvicorn
+from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 
 # Bot status tracking
@@ -116,14 +118,20 @@ with gr.Blocks(title="Discord Gemini Bot") as demo:
     refresh_btn.click(fn=get_status, outputs=status_display)
 
 
-# Add /healthz endpoint for keep-alive pings
-# Must be added after Blocks context but before launch
-@demo.app.get("/healthz")
+# Create FastAPI app with health endpoint, then mount Gradio
+app = FastAPI()
+
+
+@app.get("/healthz")
 def healthz() -> PlainTextResponse:
     """Lightweight liveness probe for keep-alive pings."""
     return PlainTextResponse("ok")
 
 
+# Mount Gradio app on FastAPI
+app = gr.mount_gradio_app(app, demo, path="/")
+
+
 if __name__ == "__main__":
-    # server_name="0.0.0.0" binds to all interfaces (required for Docker/HF Spaces)
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    # Run with uvicorn, binding to all interfaces (required for Docker/HF Spaces)
+    uvicorn.run(app, host="0.0.0.0", port=7860)
