@@ -8,6 +8,7 @@ import threading
 from datetime import datetime
 
 import gradio as gr
+from fastapi.responses import PlainTextResponse
 
 # Bot status tracking
 bot_status: dict[str, datetime | bool | str | None] = {
@@ -113,6 +114,14 @@ with gr.Blocks(title="Discord Gemini Bot") as demo:
     status_display = gr.Markdown(get_status)
     refresh_btn = gr.Button("Refresh Status")
     refresh_btn.click(fn=get_status, outputs=status_display)
+
+
+# Add /healthz endpoint for keep-alive pings
+# Must be added after Blocks context but before launch
+@demo.app.get("/healthz")
+def healthz() -> PlainTextResponse:
+    """Lightweight liveness probe for keep-alive pings."""
+    return PlainTextResponse("ok")
 
 
 if __name__ == "__main__":
