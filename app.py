@@ -50,6 +50,10 @@ def start_discord_bot() -> None:
     import asyncio
     from src.utils.logging import logger
 
+    # Create event loop FIRST - needed for async DNS resolver
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     try:
         from src import config
         from src.bot.client import DiscordBot, create_connector_with_custom_dns
@@ -66,12 +70,9 @@ def start_discord_bot() -> None:
         logger.info(f"Token length: {len(token)}, parts: {len(token.split('.'))}")
 
         # Create connector with custom DNS to bypass HF Spaces DNS restrictions
+        # Must be created AFTER event loop is set
         connector = create_connector_with_custom_dns()
         bot = DiscordBot(connector=connector)
-
-        # Create a new event loop for this thread
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
         async def runner(discord_token: str) -> None:
             bot_status["started_at"] = datetime.now()
