@@ -48,6 +48,7 @@ def get_status() -> str:
 def start_discord_bot() -> None:
     """Start the Discord bot in background."""
     import asyncio
+    from src.utils.logging import logger
 
     try:
         from src import config
@@ -55,22 +56,46 @@ def start_discord_bot() -> None:
 
         if not config.validate_config():
             bot_status["last_error"] = "Invalid configuration"
+            logger.error("Invalid configuration - missing required env vars")
             return
 
-        bot_status["started_at"] = datetime.now()
-        bot_status["is_running"] = True
-
         assert config.DISCORD_TOKEN is not None
+
+        # Log token format (safely - just length and structure)
+        token = config.DISCORD_TOKEN
+        logger.info(f"Token length: {len(token)}, parts: {len(token.split('.'))}")
+
         bot = DiscordBot()
 
         # Create a new event loop for this thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+
+        async def runner():
+            bot_status["started_at"] = datetime.now()
+            bot_status["is_running"] = True
+            logger.info("Starting Discord bot connection...")
+
+            try:
+                logger.info("Attempting login...")
+                await bot.login(config.DISCORD_TOKEN)
+                logger.info("Login successful, connecting to gateway...")
+                await bot.connect()
+            except Exception as e:
+                logger.error(f"Discord connection error: {type(e).__name__}: {e}")
+                bot_status["last_error"] = f"{type(e).__name__}: {e}"
+                bot_status["is_running"] = False
+                raise
+
         try:
-            loop.run_until_complete(bot.start(config.DISCORD_TOKEN))
+            loop.run_until_complete(runner())
+        except Exception as e:
+            logger.error(f"Event loop error: {e}")
         finally:
             loop.close()
     except Exception as e:
+        from src.utils.logging import logger
+        logger.error(f"Failed to start Discord bot: {e}")
         bot_status["last_error"] = str(e)
         bot_status["is_running"] = False
 
