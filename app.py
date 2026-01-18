@@ -50,11 +50,8 @@ def start_discord_bot() -> None:
     import asyncio
     from src.utils.logging import logger
 
-    # Create event loop FIRST - needed for async DNS resolver
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
+    async def runner() -> None:
+        """Async runner that creates bot and connects."""
         from src import config
         from src.bot.client import DiscordBot, create_connector_with_custom_dns
 
@@ -64,43 +61,44 @@ def start_discord_bot() -> None:
             return
 
         assert config.DISCORD_TOKEN is not None
+        token = config.DISCORD_TOKEN
 
         # Log token format (safely - just length and structure)
-        token = config.DISCORD_TOKEN
         logger.info(f"Token length: {len(token)}, parts: {len(token.split('.'))}")
 
         # Create connector with custom DNS to bypass HF Spaces DNS restrictions
-        # Must be created AFTER event loop is set
-        connector = create_connector_with_custom_dns()
+        # Must be created inside async context (running event loop)
+        connector = await create_connector_with_custom_dns()
         bot = DiscordBot(connector=connector)
 
-        async def runner(discord_token: str) -> None:
-            bot_status["started_at"] = datetime.now()
-            bot_status["is_running"] = True
-            logger.info("Starting Discord bot connection...")
-
-            try:
-                logger.info("Attempting login...")
-                await bot.login(discord_token)
-                logger.info("Login successful, connecting to gateway...")
-                await bot.connect()
-            except Exception as e:
-                logger.error(f"Discord connection error: {type(e).__name__}: {e}")
-                bot_status["last_error"] = f"{type(e).__name__}: {e}"
-                bot_status["is_running"] = False
-                raise
+        bot_status["started_at"] = datetime.now()
+        bot_status["is_running"] = True
+        logger.info("Starting Discord bot connection...")
 
         try:
-            loop.run_until_complete(runner(token))
+            logger.info("Attempting login...")
+            await bot.login(token)
+            logger.info("Login successful, connecting to gateway...")
+            await bot.connect()
         except Exception as e:
-            logger.error(f"Event loop error: {e}")
-        finally:
-            loop.close()
+            logger.error(f"Discord connection error: {type(e).__name__}: {e}")
+            bot_status["last_error"] = f"{type(e).__name__}: {e}"
+            bot_status["is_running"] = False
+            raise
+
+    # Create event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    try:
+        loop.run_until_complete(runner())
     except Exception as e:
         from src.utils.logging import logger
-        logger.error(f"Failed to start Discord bot: {e}")
+        logger.error(f"Event loop error: {e}")
         bot_status["last_error"] = str(e)
         bot_status["is_running"] = False
+    finally:
+        loop.close()
 
 
 # Start Discord bot in background thread

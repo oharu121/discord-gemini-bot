@@ -15,8 +15,11 @@ from src.bot.handlers import (
 from src.utils.logging import logger
 
 
-def create_connector_with_custom_dns() -> aiohttp.TCPConnector:
-    """Create aiohttp connector with custom DNS resolver (Google/Cloudflare)."""
+async def create_connector_with_custom_dns() -> aiohttp.TCPConnector:
+    """Create aiohttp connector with custom DNS resolver (Google/Cloudflare).
+
+    Must be called from within an async context (running event loop).
+    """
     try:
         from aiohttp.resolver import AsyncResolver
         resolver = AsyncResolver(nameservers=["8.8.8.8", "1.1.1.1"])
